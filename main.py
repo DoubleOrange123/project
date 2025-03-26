@@ -13,10 +13,11 @@ def main():
     db.open_connections()
     all_products = db.AllProd()
     all_products = convert(all_products)
+    print("Добрый день!")
     print(all_products)
     choice = -1
     while choice != 0:
-        menu()  #
+        menu()  
         choice = int(input())
         match choice: 
             case 1:
