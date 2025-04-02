@@ -125,6 +125,14 @@ class database:
             self.__cursor.close()
             return data
       
+      def select_all_orders_and_id(self)-> list[str]:
+            query = 'SELECT order_date, amount, prod_id FROM orders'
+            self.__cursor = self.__db.cursor()
+            self.__cursor.execute(query)
+            data = self.__cursor.fetchall()
+            self.__cursor.close()
+            return data
+      
       def add_customer(self):
             print("Введите данные для регистрации:")
             login = input("Логин: ")

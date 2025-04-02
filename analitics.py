@@ -3,9 +3,7 @@ from classes import order
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
-from datetime import datetime
-import matplotlib.dates as mdates
-
+from collections import defaultdict
 
 
 def convert(orders):
@@ -17,34 +15,20 @@ def convert(orders):
     print(converted_data)
     return converted_data
 
-import matplotlib.pyplot as plt
-
-import matplotlib.pyplot as plt
-from collections import defaultdict
-
 def graph(orders):
-    # Проверяем, что данные не пустые
-    if not orders:
-        print("Нет данных для построения графика.")
-        return
-
-    # Словарь для агрегации сумм по датам
     date_amount = defaultdict(float)
 
     for ord in orders:
         # Убедимся, что в кортеже достаточно элементов
         if len(ord) < 2:
             print(f"Недостаточно данных в записи: {ord}")
-            continue
-            
+            continue    
         date = ord[0]  # Получаем дату
         amount = ord[1]  # Получаем сумму
         date_amount[date] += amount  # Аггрегируем суммы по датам
-
     # Подготовка данных для графика
     date_list = sorted(date_amount.keys())  # Сортируем даты
     amount_list = [date_amount[date] for date in date_list]  # Получаем суммы для отсортированных дат
-
     # Строим график
     plt.figure(figsize=(10, 5))
     plt.plot(date_list, amount_list, marker='o')
@@ -55,7 +39,57 @@ def graph(orders):
     plt.grid(True)  # Добавляем сетку для лучшей читаемости графика
     plt.tight_layout()  # Настраиваем компоновку для лучшего отображения графика
     plt.show()  # Показываем график
+
+def graph2(orders):
+    date_amount = defaultdict(float)
+    for ord in orders:        
+        date = ord[0]  
+        amount = ord[1]  
+        date_amount[date] += amount
+    ser = pd.Series(date_amount)
+    plt.figure(figsize=(8, 6))
+    plt.pie(ser.values, labels=ser.index)
+    plt.title('Распределение сумм по датам')
+    plt.show()
+
+def graph3(orders):
+    product_data = defaultdict(float)
+    for ord in orders:        
+        prod_id = ord[0]  
+        amount = ord[1]
+        product_data[prod_id] += amount  
     
+    ser = pd.Series(product_data)
+    
+    plt.figure(figsize=(12, 6))
+    
+    plt.bar(x=ser.index.astype(str),height=ser.values)
+    plt.title('Суммы по продуктам')
+    plt.xlabel('ID продукта')
+    plt.ylabel('Сумма')
+    plt.show()
+
+'''def graph4(orders):
+    date_product_amount = defaultdict(float)
+    id_product_amount = defaultdict(float)
+    for ord in orders: 
+        date = ord[0]       
+        prod_id = ord[2]  
+        amount = ord[1]
+        date_product_amount[date] += amount
+        id_product_amount[prod_id] += amount
+    
+    ser = pd.Series(date_product_amount)
+    ser2 = pd.Series(id_product_amount)
+
+    plt.title("Прибыль магазинов")
+    plt.bar(x=ser.index, height=ser.values, label=ser2.index)
+
+    # размер текста на графике
+    plt.legend(title='Магазины')
+
+    plt.show()'''
+
 def convert_prodID(orders):
     converted_data = []
     for ord in orders:
@@ -124,9 +158,13 @@ def main():
     db.open_connections()
     data = db.select_all_orders()
     data2 = db.select_all_prodID()
+    data3 = db.select_all_orders_and_id()
     objects = convert(data)
     prods = convert_prodID(data2)
     graph(data)
+    graph2(data)
+    graph3(data2)
+    graph4(data3)
     pandas_order(objects)
     best_selling_prod(prods)
 main()
