@@ -68,27 +68,28 @@ def graph3(orders):
     plt.xlabel('ID продукта')
     plt.ylabel('Сумма')
     plt.show()
+ 
+def graph4(orders):
+    date_product = defaultdict(lambda: defaultdict(float))
+    for order in orders:
+        date = order[0]
+        product_id = order[2]
+        amount = order[1]
+        date_product[date][product_id] += amount
 
-'''def graph4(orders):
-    date_product_amount = defaultdict(float)
-    id_product_amount = defaultdict(float)
-    for ord in orders: 
-        date = ord[0]       
-        prod_id = ord[2]  
-        amount = ord[1]
-        date_product_amount[date] += amount
-        id_product_amount[prod_id] += amount
+   
+    df = pd.DataFrame.from_dict(date_product, orient='index').fillna(0)
+
+   
+    df.plot(kind='bar', stacked=True, figsize=(10, 6))
     
-    ser = pd.Series(date_product_amount)
-    ser2 = pd.Series(id_product_amount)
-
     plt.title("Прибыль магазинов")
-    plt.bar(x=ser.index, height=ser.values, label=ser2.index)
-
-    # размер текста на графике
-    plt.legend(title='Магазины')
-
-    plt.show()'''
+    plt.xlabel("Дата")
+    plt.ylabel("Сумма")
+    plt.legend(title='Товары', bbox_to_anchor=(1.05, 1), loc='upper left')
+    
+    plt.tight_layout()
+    plt.show()
 
 def convert_prodID(orders):
     converted_data = []
